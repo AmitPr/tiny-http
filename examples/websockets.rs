@@ -74,30 +74,29 @@ fn main() {
         // we are handling this websocket connection in a new task
         spawn(move || {
             // checking the "Upgrade" header to check that it is a websocket
-            match request
+            if request
                 .headers()
                 .iter()
-                .find(|h| h.field.equiv(&"Upgrade"))
+                .find(|h| h.field.equiv("Upgrade"))
                 .and_then(|hdr| {
                     if hdr.value == "websocket" {
                         Some(hdr)
                     } else {
                         None
                     }
-                }) {
-                None => {
-                    // sending the HTML page
-                    request.respond(home_page(port)).expect("Responded");
-                    return;
-                }
-                _ => (),
+                })
+                .is_none()
+            {
+                // sending the HTML page
+                request.respond(home_page(port)).expect("Responded");
+                return;
             };
 
             // getting the value of Sec-WebSocket-Key
             let key = match request
                 .headers()
                 .iter()
-                .find(|h| h.field.equiv(&"Sec-WebSocket-Key"))
+                .find(|h| h.field.equiv("Sec-WebSocket-Key"))
                 .map(|h| h.value.clone())
             {
                 None => {
@@ -133,7 +132,7 @@ fn main() {
                     Ok(n) if n >= 1 => {
                         // "Hello" frame
                         let data = [0x81, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f];
-                        stream.write(&data).ok();
+                        stream.write_all(&data).ok();
                         stream.flush().ok();
                     }
                     Ok(_) => panic!("eof ; should never happen"),

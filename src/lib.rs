@@ -238,6 +238,19 @@ impl Server {
         })
     }
 
+    #[cfg(feature = "vsock")]
+    #[inline]
+    /// Shortcut for a Vsock socket server at a specific address
+    pub fn http_vsock(
+        cid: u32,
+        port: u32,
+    ) -> Result<Server, Box<dyn Error + Send + Sync + 'static>> {
+        Server::new(ServerConfig {
+            addr: ConfigListenAddr::vsock_from_cid_port(cid, port),
+            ssl: None,
+        })
+    }
+
     /// Builds a new server that listens on the specified address.
     pub fn new(config: ServerConfig) -> Result<Server, Box<dyn Error + Send + Sync + 'static>> {
         let listener = config.addr.bind()?;
@@ -467,6 +480,9 @@ impl Drop for Server {
                 let path = addr.as_pathname().unwrap();
                 std::os::unix::net::UnixStream::connect(path).map(Connection::from)
             }
+            #[cfg(feature = "vsock")]
+            // TODO: Doesn't work with vsock
+            ListenAddr::Vsock(addr) => vsock::VsockStream::connect(addr).map(Connection::from),
         };
         if let Ok(stream) = maybe_stream {
             let _ = stream.shutdown(Shutdown::Both);

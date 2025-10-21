@@ -17,6 +17,7 @@ ssl = ["ssl-openssl"]
 ssl-openssl = ["openssl", "zeroize"]
 ssl-rustls = ["rustls", "rustls-pemfile", "zeroize"]
 ssl-native-tls = ["native-tls", "zeroize"]
+vsock = ["dep:vsock"]
 
 [dependencies]
 ascii = "1.0"
@@ -29,6 +30,7 @@ rustls = { version = "0.20", optional = true }
 rustls-pemfile = { version = "0.2.1", optional = true }
 zeroize = { version = "1", optional = true }
 native-tls = { version = "0.2", optional = true }
+vsock = { version = "0.5.1", optional = true }
 
 [dev-dependencies]
 rustc-serialize = "0.3"
