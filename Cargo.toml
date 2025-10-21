@@ -1,8 +1,7 @@
 [package]
 name = "tiny_http"
 version = "0.12.0"
-authors = ["pierre.krieger1708@gmail.com",
-           "Corey Farwell <coreyf@rwell.org>"]
+authors = ["pierre.krieger1708@gmail.com", "Corey Farwell <coreyf@rwell.org>"]
 description = "Low level HTTP server library"
 documentation = "https://tiny-http.github.io/tiny-http/tiny_http/index.html"
 keywords = ["http", "server", "web"]
@@ -33,6 +32,7 @@ native-tls = { version = "0.2", optional = true }
 vsock = { version = "0.5.1", optional = true }
 
 [dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
 rustc-serialize = "0.3"
 sha1 = "0.6.0"
 fdlimit = "0.1"
@@ -40,3 +40,7 @@ fdlimit = "0.1"
 [package.metadata.docs.rs]
 # Enable just one SSL implementation
 features = ["ssl-openssl"]
+
+[[bench]]
+name = "bench"
+harness = false

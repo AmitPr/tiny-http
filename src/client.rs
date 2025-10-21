@@ -82,6 +82,7 @@ impl ClientConnection {
         let mut prev_byte_was_cr = false;
 
         loop {
+            #[allow(clippy::unbuffered_bytes)]
             let byte = self.next_header_source.by_ref().bytes().next();
 
             let byte = match byte {
